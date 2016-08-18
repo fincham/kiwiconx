@@ -12,7 +12,7 @@ class TTYApplication(WebSocketApplication):
                 to_browser_buffer = self.sock.recv(100)
                 for c in to_browser_buffer:
                     self.ws.send(c)
-                    sleep(0.004)
+                    sleep(0.004) # 9600ish baud
             except:
                 break
 
