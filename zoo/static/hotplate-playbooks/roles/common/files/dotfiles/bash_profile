@@ -1,0 +1,7 @@
+# ~/.bash_profile
+# This file is managed by Ansible.
+
+# Source `.bashrc' if it exists (which will bail out if this is a non-interactive shell)
+if [[ -f ~/.bashrc ]]; then
+    . ~/.bashrc
+fi

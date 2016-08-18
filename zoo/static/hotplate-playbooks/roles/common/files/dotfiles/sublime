@@ -1,0 +1,8 @@
+{
+    "translate_tabs_to_spaces": true,
+    "detect_indentation": false,
+    "tab_size": 4,
+    "scroll_speed": 0,
+    "atomic_save": true,
+    "ensure_newline_at_eof_on_save": true,   
+}

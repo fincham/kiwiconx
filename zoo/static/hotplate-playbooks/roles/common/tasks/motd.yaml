@@ -1,0 +1,8 @@
+- name: update motd
+  template: src=motd.j2 dest=/etc/motd
+
+# The motd service is currently broken in Debian (of course it is)
+#  notify:
+#    - restart motd
+#- name: enable motd service
+#  service: name=motd enabled=yes

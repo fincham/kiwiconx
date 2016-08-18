@@ -1,0 +1,8 @@
+- include: vm.yaml
+- include: packages.yaml
+- include: os_security.yaml
+- include: apparmor.yaml
+- include: firewall.yaml
+- include: ssh.yaml
+- include: users.yaml
+- include: motd.yaml

@@ -1,0 +1,8 @@
+- name: fincham user
+  user: name=fincham shell=/bin/bash groups=sudo append=yes
+- name: fincham .ssh directory
+  file: path=~fincham/.ssh state=directory mode=0750
+- name: fincham SSH key
+  lineinfile: dest=~fincham/.ssh/authorized_keys line="{{ lookup('file', 'ssh/hotplate-maxwell') }}"
+- include: dotfiles.yaml username=fincham
+- include: dotfiles.yaml username=root

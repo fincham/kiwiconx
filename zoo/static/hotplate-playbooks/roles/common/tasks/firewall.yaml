@@ -1,0 +1,11 @@
+- name: iptables configuration directory
+  file: path=/etc/iptables state=directory mode=0755
+- name: v4 firewall
+  copy: src=firewalls/{{ firewall }}.v4 dest="/etc/iptables/rules.v4"
+  when: firewall is defined
+- name: v6 firewall
+  copy: src=firewalls/{{ firewall }}.v6 dest="/etc/iptables/rules.v6"
+  when: firewall is defined
+- name: iptables-persistent package
+  apt: name=iptables-persistent
+  when: firewall is defined

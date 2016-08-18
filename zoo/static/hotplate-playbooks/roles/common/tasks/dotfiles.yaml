@@ -1,0 +1,37 @@
+- name: home directory permissions
+  file: path=~{{ username }} state=directory mode=0750
+- name: bashrc dotfile
+  copy: src=dotfiles/bashrc dest=~{{ username }}/.bashrc owner="{{ username }}" group="{{ username }}"
+- name: bash_profile dotfile
+  copy: src=dotfiles/bash_profile dest=~{{ username }}/.bash_profile owner="{{ username }}" group="{{ username }}"
+- name: bash_logout dotfile
+  copy: src=dotfiles/bash_logout dest=~{{ username }}/.bash_logout owner="{{ username }}" group="{{ username }}"
+- name: vimrc dotfile
+  copy: src=dotfiles/vimrc dest=~{{ username }}/.vimrc owner="{{ username }}" group="{{ username }}"
+- name: vim configuration directory
+  file: path=~{{ username }}/.vim/colors state=directory owner="{{ username }}" group="{{ username }}"
+- name: sahara colours for vim
+  copy: src=dotfiles/sahara dest=~{{ username }}/.vim/colors/sahara.vim owner="{{ username }}" group="{{ username }}"
+- name: tmux dotfile
+  copy: src=dotfiles/tmux dest=~{{ username }}/.tmux.conf owner="{{ username }}" group="{{ username }}"
+
+- name: Xmodmap dotfile
+  copy: src=dotfiles/xmodmap dest=~{{ username }}/.Xmodmap owner="{{ username }}" group="{{ username }}"
+  when: username != "root"
+
+- name: Check if Sublime Text is installed
+  stat: path=~{{ username }}/.config/sublime-text-3
+  register: sublime_text_config_path
+- name: Sublime Text settings
+  copy: src=dotfiles/sublime dest=~{{ username }}/.config/sublime-text-3/Packages/User/Preferences.sublime-settings owner="{{ username }}" group="{{ username }}"
+  when: username != "root" and sublime_text_config_path.stat.exists
+
+- name: Check if Sylpheed is installed
+  stat: path=~{{ username }}/.sylpheed-2.0
+  register: sylpheed_config_path
+- name: Sylpheed actionsrc
+  copy: src=dotfiles/actionsrc dest=~{{ username }}/.sylpheed-2.0/actionsrc owner="{{ username }}" group="{{ username }}"
+  when: username != "root" and sylpheed_config_path.stat.exists
+- name: Sylpheed customheaderrc
+  copy: src=dotfiles/customheaderrc dest=~{{ username }}/.sylpheed-2.0/customheaderrc owner="{{ username }}" group="{{ username }}"
+  when: username != "root" and sylpheed_config_path.stat.exists

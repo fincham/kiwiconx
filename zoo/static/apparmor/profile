@@ -1,0 +1,21 @@
+/usr/bin/qemu-system-i386 {
+  /usr/bin/qemu-system-i386 mr,
+  /etc/ld.so.cache rm,
+  /lib/** rm,
+  /usr/lib/** rm,
+  /dev/urandom r,
+  capability net_admin,
+  /usr/share/seabios/* rm,
+  /usr/share/qemu/** r,
+
+  /etc/qemu-ifup rix,
+  /etc/qemu-ifdown rix,
+
+  /dev/net/tun rw,
+  /dev/tap* rw,
+
+  /run/watchdog/* rw,
+  /opt/kiwicon/zoo/vm/storesecure.img rw,
+  /opt/kiwicon/zoo/vm/commsecure.img rw,
+  /opt/kiwicon/zoo/vm/airgap.img rw,
+}

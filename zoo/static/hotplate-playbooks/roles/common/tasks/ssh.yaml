@@ -1,0 +1,5 @@
+- name: openssh-server package
+  apt: name=openssh-server
+- name: disable passworded logins by SSH
+  lineinfile: dest=/etc/ssh/sshd_config regexp='^[#]*PasswordAuthentication (?!no).*$' line='PasswordAuthentication no' backrefs=yes
+  notify: restart ssh

@@ -1,0 +1,8 @@
+Save TNEF part: gnome-terminal -e tnef-claws %p
+Rot13: |tr a-zA-Z n-za-mN-ZA-M|
+GnuPG/Verify: |gpg --no-tty --verify
+GnuPG/Decrypt: |gpg --use-agent --no-tty --decrypt -|
+GnuPG/Receive Selected Key: |gpg --recv-key `cat`
+GnuPG/Import Key From Mail: gpg --import %p
+GnuPG/Insert My Public Key: gpg --export -a michael@finch.am>
+Decode quoted-printable: |qprint -d|

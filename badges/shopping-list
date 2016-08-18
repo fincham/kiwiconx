@@ -1,0 +1,38 @@
+Just one overall
+================
+Nicegear
+--------
+1x Big pack of small LEDs https://nicegear.co.nz/components/led-18mm-green-100-pack/
+2x Cheerful rainbow ribbon cable https://nicegear.co.nz/cables-connectors/ribbon-cable-10-wire-15ft/
+
+DiamondAge
+----------
+1x 3mm / 125m Spool of Sapphire PLA (or black, up to you, sapphire is nice tho) http://diamondage.co.nz/product/pla-standard-colours/
+
+Per Thing
+=========
+Nicegear
+--------
+1x Adafruit Micro Lipo https://nicegear.co.nz/batteries-chargers/adafruit-micro-lipo-usb-liionlipoly-charger-with-micro-usb-jack/
+1x Adafruit GEMMA (budget permitting) https://nicegear.co.nz/etextiles/adafruit-gemma/
+1x 850mAh Lipo https://nicegear.co.nz/batteries-chargers/lithium-ion-battery-850mah/ OR 500mAh Lipo https://nicegear.co.nz/batteries-chargers/lithium-ion-polymer-battery-500mah/
+1x Mini Push Button Switch https://nicegear.co.nz/electronics-gear/mini-push-button-switch/
+1x EITHER NeoPixel Jewel https://nicegear.co.nz/electronics-gear/neopixel-jewel-7-x-5050-rgbw-led-w-integrated-drivers-natural-white-4500k/ OR NeoPixel Ring 12 https://nicegear.co.nz/electronics-gear/neopixel-ring-12-x-ws2812-5050-rgb-led-with-integrated-drivers/, depending on aesthetic considerations
+
+AliExpress
+----------
+1x WeMos D1mini board https://www.aliexpress.com/store/product/D1-mini-Mini-NodeMcu-4M-bytes-Lua-WIFI-Internet-of-Things-development-board-based-ESP8266/1331105_32529101036.html
+2x ProtoBoard shield https://www.aliexpress.com/store/product/ProtoBoard-Shield-for-WeMos-D1-mini-double-sided-perf-board/1331105_32627711647.html
+
+Per UV sensing thing
+====================
+1x SI1145 board https://www.adafruit.com/products/1777 or https://www.adafruit.com/product/1981 depending on what fits the design better
+
+Per bend sensing thing
+======================
+1x Flex sensor in whatever size is suitable https://nicegear.co.nz/sensors/flex-sensor-22/ 
+
+Per OLED display thing
+======================
+1x Any I2C OLED display really, a popular one is https://www.aliexpress.com/item/Free-shipping-1Pcs-128X64-OLED-LCD-LED-Display-Module-For-Arduino-0-96-I2C-IIC-SPI/32224983358.html?ws_ab_test=searchweb201556_7,searchweb201602_2_10057_10056_10065_10037_10068_10055_10054_10069_10059_10058_10032_10073_10017_10070_10060_10061_10052_10062_10053_10050_10051,searchweb201603_4&btsid=900a4ee8-a0ba-4c3d-8bb6-49f5d4294784
+1x 2000mAh Lipo https://nicegear.co.nz/batteries-chargers/lithium-ion-polymer-battery-2000mah-2/
