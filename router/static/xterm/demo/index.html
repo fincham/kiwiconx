@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+    <head>
+        <title>rlogin</title>
+        <style type="text/css">
+            body, html {
+                background-color: black;
+                padding: 0px;
+                margin: 0px;
+            }
+
+            #terminal-container .terminal {
+                padding: 0px !important;
+-webkit-filter: grayscale(100%);
+filter: grayscale(100%);
+            }
+
+            .terminal .xterm-viewport {
+                overflow-y: hidden !important;
+            }
+
+            .overlayer {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                pointer-events:none;
+                background: #0088ff;
+                z-index: 5;
+                mix-blend-mode: multiply; /* before its outlawed I guess */
+            }
+        </style>
+        <link rel="stylesheet" href="../src/xterm.css" />
+        <link rel="stylesheet" href="../addons/fullscreen/fullscreen.css" />
+        <link rel="stylesheet" href="style.css" />
+      	<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.min.js"></script>
+        <script src="../src/xterm.js" ></script>
+        <script src="../addons/attach/attach.js" ></script>
+        <script src="../addons/fit/fit.js" ></script>
+        <script src="../addons/fullscreen/fullscreen.js" ></script>
+    </head>
+    <body>
+        <div class="overlayer">&nbsp;</div>
+        <div id="terminal-container"></div>
+        <script src="main.js" defer ></script>
+    </body>
+</html>
