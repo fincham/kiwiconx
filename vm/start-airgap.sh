@@ -7,6 +7,7 @@ qemu-system-i386 -cpu pentium -m 64M   \
     -net nic,macaddr=30:1a:28:2b:7f:32,model=pcnet -net tap,ifname=airgap-out &
 
 sleep 1
+./watcher airgap >> /var/log/watcher-airgap.log &
 
 ip link set up dev airgap-out
 ip link set up dev airgap-in

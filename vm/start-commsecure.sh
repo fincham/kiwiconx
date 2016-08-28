@@ -7,6 +7,7 @@ qemu-system-i386 -cpu pentium2 -m 192M   \
     -net nic,macaddr=30:1a:28:1a:c8:e1,model=pcnet -net tap,ifname=commsecure &
 
 sleep 1
+./watcher commsecure >> /var/log/watcher-commsecure.log &
 
 ip link set up dev commsecure
 ip link set up dev cesspit

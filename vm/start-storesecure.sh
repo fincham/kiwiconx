@@ -8,7 +8,7 @@ qemu-system-i386 -cpu pentium2 -m 256M   \
 
 
 sleep 1
-./watcher storesecure > /var/log/watcher-storesecure.log &
+./watcher storesecure >> /var/log/watcher-storesecure.log &
 
 ip link set up dev storesecure
 ip link set up dev cesspit
