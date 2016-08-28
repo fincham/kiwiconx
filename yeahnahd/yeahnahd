@@ -1,0 +1,6 @@
+#!/bin/sh
+
+while true; do
+	echo 'yeah nah' > /dev/ttyS0
+	sleep 1
+done

@@ -1,0 +1,31 @@
+#!/usr/bin/python
+
+import datetime
+import socket
+import sys
+import subprocess
+import time
+
+def stamp():
+    return datetime.datetime.now().strftime('[%d/%b/%Y:%H:%M:%S] ')
+
+vm_name = sys.argv[1]
+
+sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+sock.settimeout(60)
+sock.connect('/run/watchdog/%s' % vm_name)
+
+start = time.time()
+
+print stamp() +"starting to watch %s..." % vm_name
+while True:
+    try:
+        heartbeat = sock.recv(1024)
+        if time.time() - start > 300:
+            print stamp() + "%s is still alive" % vm_name
+            start = time.time()
+    except socket.timeout:
+        print stamp() + "%s is dead!" % vm_name
+        subprocess.call('supervisorctl restart %s' % vm_name, shell=True)
+
+

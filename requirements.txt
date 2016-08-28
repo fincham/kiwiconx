@@ -1,2 +1,1 @@
 gevent-websocket==0.9.5
-Flask==0.11.1
