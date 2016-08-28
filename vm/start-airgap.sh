@@ -1,6 +1,7 @@
 #!/bin/sh
 
 qemu-system-i386 -cpu pentium -m 64M   \
+    -nographic \
     -drive file=airgap.img,id=rootdisk,format=raw,if=none -device ide-hd,model='PROBABLY A COMPACTFLASH OR SOMETHING',serial='J8gJYDhqsgBy5F1R',drive=rootdisk,bus=ide.0 \
     -chardev socket,server,nowait,path=/run/watchdog/airgap,id=charserial0 -device isa-serial,chardev=charserial0,id=serial0 \
     -net nic,macaddr=30:1a:28:de:01:89,model=pcnet -net tap,ifname=airgap-in \
