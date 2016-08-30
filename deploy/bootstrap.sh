@@ -125,6 +125,19 @@ cat >/etc/apache2/sites-enabled/000-default-le-ssl.conf <<EOF
     ProxyPass /9392ebbf6a88d548566ec1e199a07a17 !
 </VirtualHost>
 EOF
+
+cat >/etc/apache2/mods-available/mpm_worker.conf <<EOF
+<IfModule mpm_event_module>
+    StartServers             2
+    MinSpareThreads      25
+    MaxSpareThreads      75
+    ThreadLimit          64
+    ThreadsPerChild      25
+    MaxRequestWorkers     500
+    MaxConnectionsPerChild   0
+</IfModule>
+EOF
+
 service apache2 restart
 
 echo "*** Building VM environment..."
