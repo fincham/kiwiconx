@@ -1,0 +1,22 @@
+- name: kptr restrict sysctl
+  sysctl: name=kernel.kptr_restrict value=1 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: ptrace scope sysctl
+  sysctl: name=kernel.yama.ptrace_scope value=1 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: mmap min addr sysctl
+  sysctl: name=vm.mmap_min_addr value=65536 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: v4 accept redirects sysctl
+  sysctl: name=net.ipv4.conf.all.accept_redirects value=0 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: v6 accept redirects sysctl
+  sysctl: name=net.ipv6.conf.all.accept_redirects value=0 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: send redirects sysctl
+  sysctl: name=net.ipv4.conf.all.send_redirects value=0 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: v4 source route sysctl
+  sysctl: name=net.ipv4.conf.all.accept_source_route value=0 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: v6 source route sysctl
+  sysctl: name=net.ipv6.conf.all.accept_source_route value=0 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: martian logging sysctl
+  sysctl: name=net.ipv4.conf.all.log_martians value=1 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: kernel panic sysctl
+  sysctl: name=kernel.panic value=10 sysctl_file=/etc/sysctl.d/10-kernel-hardening.conf
+- name: su pam wheel
+  copy: src=pam/su dest="/etc/pam.d/su"

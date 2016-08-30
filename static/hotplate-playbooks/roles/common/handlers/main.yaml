@@ -1,0 +1,6 @@
+- name: update-grub
+  action: command "update-grub"
+- name: restart motd
+  service: name=motd state=restarted
+- name: restart ssh
+  service: name=ssh state=restarted

@@ -1,0 +1,10 @@
+- name: vim package
+  apt: name=vim
+- name: default editor
+  alternatives: name=editor path=/usr/bin/vim.basic
+- name: less package
+  apt: name=less
+- name: tmux package
+  apt: name=tmux
+- name: git package
+  apt: name=git

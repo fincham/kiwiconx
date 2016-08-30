@@ -1,0 +1,7 @@
+# ~/.bash_logout
+# This file is managed by Ansible.
+
+# Clear screen if this is the final shell to close
+if ((SHLVL == 1)) ; then
+    clear_console -q 2>/dev/null
+fi

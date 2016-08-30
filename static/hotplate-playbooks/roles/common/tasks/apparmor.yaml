@@ -1,0 +1,9 @@
+- name: apparmor package
+  apt: name=apparmor
+- name: apparmor-profiles package
+  apt: name=apparmor-profiles
+- name: apparmor-utils package
+  apt: name=apparmor-utils
+- name: set kernel security module to apparmor
+  lineinfile: dest=/etc/default/grub regexp='^GRUB_CMDLINE_LINUX="((?!.*security=.*).*)"$' line='GRUB_CMDLINE_LINUX="\1 apparmor=1 security=apparmor"' backrefs=yes
+  notify: update-grub

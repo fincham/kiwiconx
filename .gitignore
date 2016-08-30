@@ -1,6 +1,6 @@
 *.tar.gz
 venv/
-vm/*.img
+vm-images/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
