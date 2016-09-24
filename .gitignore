@@ -1,6 +1,6 @@
 *.tar.gz
-venv/
-vm-images/*
+zoo/venv/
+zoo/vm-images/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
