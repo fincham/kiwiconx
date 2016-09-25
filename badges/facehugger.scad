@@ -71,7 +71,7 @@ module charger_grabber(depth, slot) {
 
 module sled() {
     // bottom plane
-    cube([33, 56, 1]);
+    cube([35, 58, 1]);
 
     // wemos grabbers
     translate([2, 36, 0]) // top left
@@ -98,7 +98,7 @@ module sled() {
     
 }
 
-preview = 0;
+preview = 1;
 
 if (preview) {
     translate([1.5, 6.5, 1.1])
