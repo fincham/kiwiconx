@@ -40,27 +40,33 @@ module smaller_kx(h)
 
 difference() {
     union() {
-        translate([0, 0, 60]) { // letters
+        translate([0, 0, 35]) { // letters
             difference() {
                 rotate([90, 0, 0]) 
+                scale(0.5)
                     kx(4);
                 rotate([90, 0, 0])
-                translate([0, 5, 1.5])
-                    smaller_kx(10);
+                translate([0, 2.5, 1])
+                scale(0.5)
+                    smaller_kx(5);
+                rotate([90, 0, 0])
+                translate([0, 2.5, -1])
+                scale(0.5)
+                    smaller_kx(3.5);
             }
         }
-        translate([0, -2, 0]) { // spike
+        translate([0, -1, 0]) { // spike
             translate([0, 0, 2.5])
-                cylinder(r1=2,r2=2.5,h=5);            
-            cylinder(r=2,h=10);
-            translate([0, 0, 3])
-                sphere(r=2.5);
+                cylinder(r1=1,r2=3.8/2,h=7);            
+            cylinder(r=1,h=10);
+            translate([0, 0, 4])
+                sphere(r=3.5/2);
         }
     }
     translate([-5, 0, 0])
-        cube([10,10,7.6]);
-    translate([-5, -14, 0])
-        cube([10,10,7.6]);  
+        cube([10,10,10]);
+    translate([-5, -12, 0])
+        cube([10,10,10]);  
 }
 
   
