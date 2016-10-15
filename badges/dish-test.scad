@@ -1,5 +1,7 @@
 $fn = 100;
 
+include <circuit.scad>;
+
 
 // dish top         
 difference() {
@@ -8,6 +10,10 @@ difference() {
 
     translate([0, 0, -0.1])
         cube([12.5, 6.5, 200], center=true); // flower stem connector
+    
+    scale([2, 2, 1])
+    translate([0, 0, 15.7])
+        circuit(10);
 }
 
 // the dish
@@ -16,14 +22,20 @@ difference() {
     union() {
         cylinder(r1=45, r2=20, h=25, $fn=12); // dish itself
         
-        // raised area around slots
-        for (rot = [0 : 30 : 360]) {
-            rotate([180, 0, rot]) {
-                translate([45.8, 0, -2])
-                rotate([0, -45, 0])
-                    cube([80, 5,5], center=true);
-            }
-        }        
+        difference() {
+            // raised area around slots
+            for (rot = [0 : 30 : 360]) {
+                rotate([180, 0, rot]) {
+                    translate([40.8, 0, -2])
+                    rotate([45, -45, 0])
+                        cube([80, 6,6], center=true);
+                }
+            } 
+     
+            translate([0, 0, -50]) 
+                cylinder(r=200, h=50, $fn=50); // cut top off
+    
+        }
     }
     
     translate([0, 0, -2])
@@ -41,6 +53,8 @@ difference() {
         }
     }
         
+
+    
 }
 
 
