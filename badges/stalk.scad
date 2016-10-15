@@ -34,7 +34,7 @@ difference() { // drill wire hole
     
     // driled hole
     translate([0, 0, -0.1])    
-        cube([10, 1.8,200], center=true);        
+        cube([10, 1.6,200], center=true);        
     
     // some "art" for the side
     /* intersection() {

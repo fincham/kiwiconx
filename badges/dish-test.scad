@@ -2,7 +2,6 @@ $fn = 100;
 
 include <circuit.scad>;
 
-
 // dish top         
 difference() {
     translate([0, 0, 15.01])

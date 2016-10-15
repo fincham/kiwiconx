@@ -1,72 +1,78 @@
-
 $fn = 100;
 
+include <circuit.scad>;
 
-
+// dish top         
 difference() {
-    translate([0, 0, 16])
-    rotate([0, 180,0]) {
-        difference() {
-            cylinder(r1=90/2, r2=40/2,h=25); // the barnacle!
-                
-            // bore center
-            translate([0, 0, -0.1])
-           // flowerpot
-            cube([12.5, 6.5,200], center=true);
- 
+    translate([0, 0, 15.01])
+        cylinder(r=28, h=1, $fn=12); // dish itself
 
+    translate([0, 0, -0.1])
+        cube([12.5, 6.5, 200], center=true); // flower stem connector
+    
+    scale([2, 2, 1])
+    translate([0, 0, 15.7])
+        circuit(10);
+}
 
-            // flatten top
-            translate([0, 0, 16])
-                cylinder(r=40,h=20);
-            
-            // inner space
-            difference() {
-                union() {
-                    
-                    translate([0, 0, -3.2])
-                        cylinder(r1=90/2, r2=40/2,h=25);
-                
-                     rotate([0, 180,0]) {
-                    translate([0, 0, -16]) {
-                        for (rot = [45 : 30 : 405]) {
-                            rotate([0, 0, rot]) {
-                                translate([22, 0, -2])
-                                rotate([0, -45, 0])
-                                    cube([80, 10,5], center=true);
-                                translate([38, 0, 14])
-                                rotate([0, -45, 0])                                
-                                    cube([13, 15,5], center=true);
-                                
-                            }
-                        }
-                    }
-                    }
-                }
-                // cut off bottom of inner volume
-                translate([0, 0, 15])
-                    cylinder(r=100, h=100);
-            }
-
- 
-
-            
+// the dish
+difference() {
+    
+    union() {
+        cylinder(r1=45, r2=20, h=25, $fn=12); // dish itself
         
+        difference() {
+            // raised area around slots
+            for (rot = [0 : 30 : 360]) {
+                rotate([180, 0, rot]) {
+                    translate([40.8, 0, -2])
+                    rotate([45, -45, 0])
+                        cube([80, 6,6], center=true);
+                }
+            } 
+     
+            translate([0, 0, -50]) 
+                cylinder(r=200, h=50, $fn=50); // cut top off
     
-    
-    // the slots 
-    translate([0, 0, -16]) {
-        for (rot = [0 : 30 : 360]) {
-            rotate([0, 0, rot]) {
-                translate([28, 0, -2])
-                rotate([0, -45, 0])
-                    cube([80, 3,5], center=true);
-            }
         }
     }
     
+    translate([0, 0, -2])
+        cylinder(r1=45, r2=20, h=25, $fn=12); // space inside the dish
+    
+    translate([0, 0, 16]) 
+        cylinder(r=50, h=50, $fn=50); // cut top off
+    
+    // the slots 
+    for (rot = [0 : 30 : 360]) {
+        rotate([180, 0, rot]) {
+            translate([45.8, 0, -2])
+            rotate([0, -45, 0])
+                cube([80, 3,5], center=true);
+        }
+    }
+        
+
+    
 }
-}
+
+
+
+
+// overhang supports
+intersection() {
+    cylinder(r1=45, r2=20, h=25, $fn=12); // dish itself
+
+    union() {
+        translate([-9.25, -30, 14])
+            cube([3, 60, 1]);
+        translate([6.25, -30, 14])
+            cube([3, 60, 1]); /*
+        translate([-30, 3.25, 14])
+            cube([60, 3, 1]);  
+        translate([-30, -6.25, 14])
+            cube([60, 3, 1]);          */
+    }
 }
 
 
@@ -77,110 +83,24 @@ module screw_post () {
         intersection() {
             // post itself
             union() {
-                translate([34, 0, 7]) {
-                    cylinder(r=2.5, h=9);
-                    translate([6, 0, 3])
-                        cube([12, 4, 12], center=true);
+                translate([35, 0, 0]) {
+                    cylinder(r=2.7, h=20);
+                    translate([0, -2, 0])
+                        cube([12, 4, 12]);
                 }
             }
 
-            translate([0, 0, 16])
-            rotate([0, 180,0])    
-            translate([0, 0, -3.2])
-                cylinder(r1=90/2, r2=40/2,h=25);
+            translate([0, 0, -1])
+                cylinder(r1=45, r2=20, h=25, $fn=12); // space inside the dish
         }
         
         // screw hole
-        translate([34, 0, 3])
-            cylinder(r=2.55/2, h=20);        
+        translate([35, 0, -0.1])
+            cylinder(r=2.85/2, h=20);        
     }
 }
 
-/*
-// plate everything sits on
-difference() {
-    translate([0, 0, 2]) 
-        cylinder(r=28, h=0.5);
-
-           // flowerpot slot
-            cube([20, 5,200], center=true);
-}
-*/
 screw_post();
 
 rotate([0, 0, 180])
     screw_post();
-
-
-
-
-/*
-// the stalk!
-
-color("red")
-difference() { // drill wire hole
-    union() {
-        // bottom connector
-        translate([0, 0, -30])
-            cube([12, 4,30], center=true);
-        hull() {
-            translate([0, 0, -20])
-                cube([12, 7,0.1], center=true); // wide part of clip
-            translate([0, 0, -15])
-                cube([12, 4,1], center=true); // thin part of clip
-        }
-
-        // top connector
-        rotate([0, 180, ]) {
-
-            hull() {
-                translate([0, 0, 45])
-                    cube([12, 7,0.1], center=true);
-                translate([0, 0, 50])
-                    cube([12, 4,1], center=true);
-            }
-        }
-
-        // modesty plate
-        translate([0, 0, -23.5])
-            cube([12, 16,3], center=true);
-        
-        // top plate
-        translate([0, 0, -40])
-            cube([12, 10,3], center=true);        
-    }
-    
-    // driled hole
-    translate([0, 0, -100])    
-        cube([8, 1.5,200], center=true);        
-}
-
-
-// flower
-difference() {
-    union() {
-        translate([0, 0, -57]) 
-        for (rot = [0 : 30 : 360]) {
-            rotate([0, 0, rot]) {
-                translate([28, 0, -2])
-                scale([2, 1, 1])
-                rotate([0, 0, 45])     
-                    cube([10, 10,2], center=true);
-            }
-        }
-        translate([0, 0, -60]) 
-            cylinder(r=31, h=2);
-    }
-    
-    translate([0, 0, -58]) 
-    for (rot = [0 : 30 : 360]) {
-        rotate([0, 0, rot]) {
-            translate([28, 0, -2])
-            scale([2, 1, 1])
-            rotate([0, 0, 45])     
-                cube([8, 8,2], center=true);
-        }
-    }
-}
-
-*/
