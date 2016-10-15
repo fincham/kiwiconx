@@ -46,21 +46,21 @@ difference() {
                 scale(0.5)
                     kx(4);
                 rotate([90, 0, 0])
-                translate([0, 2.5, 1])
+                translate([0, 2.5, 1.5])
                 scale(0.5)
                     smaller_kx(5);
                 rotate([90, 0, 0])
                 translate([0, 2.5, -1])
                 scale(0.5)
-                    smaller_kx(3.5);
+                    smaller_kx(3);
             }
         }
         translate([0, -1, 0]) { // spike
             translate([0, 0, 2.5])
-                cylinder(r1=1,r2=3.8/2,h=7);            
-            cylinder(r=1,h=10);
-            translate([0, 0, 4])
-                sphere(r=3.5/2);
+                cylinder(r1=3.8/2,r2=4/2,h=7);            
+            cylinder(r=3.8/2,h=10);
+            translate([0, 0, 6])
+                sphere(r=4.1 /2);
         }
     }
     translate([-5, 0, 0])
