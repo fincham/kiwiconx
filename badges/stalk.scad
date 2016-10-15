@@ -37,7 +37,7 @@ difference() { // drill wire hole
         cube([10, 1.8,200], center=true);        
     
     // some "art" for the side
-    intersection() {
+    /* intersection() {
         translate([-6.5, -2, 5])
             cube([13, 4, 55]); // stalk
         
@@ -45,6 +45,6 @@ difference() { // drill wire hole
         rotate([90, 0, 0])
         scale([1.5, 2, 1])
             circuit(1);
-    }
+    } */
 }
 
