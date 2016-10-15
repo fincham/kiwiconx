@@ -10,13 +10,13 @@ difference() { // drill wire hole
 
         hull() {
             translate([0, 0, 3])
-                cube([13, 8, 0.1], center=true); // wide part of clip
+                cube([13, 9, 0.1], center=true); // wide part of clip
             cube([13, 4, 1], center=true); // thin part of clip
         }
 
 
         // modesty plate
-        translate([-6.5, -8, 4.4])
+        translate([-6.5, -8, 4.1])
             cube([13, 16, 1.5]);
         
         /*
@@ -27,5 +27,5 @@ difference() { // drill wire hole
     
     // driled hole
     translate([0, 0, -0.1])    
-        cube([9, 2,200], center=true);        
+        cube([10, 1.8,200], center=true);        
 }
