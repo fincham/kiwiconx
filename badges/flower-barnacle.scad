@@ -37,6 +37,11 @@ difference() {
         }
     }
     
+    
+    translate([29.6, -38.7, -0.01])
+    rotate([0, 0, 45])
+        cube([13,20,4.5]);
+        
     translate([0, 0, -2])
         cylinder(r1=45, r2=20, h=25, $fn=12); // space inside the dish
     
@@ -104,3 +109,15 @@ screw_post();
 
 rotate([0, 0, 180])
     screw_post();
+
+
+// modesty plate
+difference() {
+    translate([-7.5, -9, 15])
+        cube([15, 18, 3.5]);  
+    
+    translate([-6.55, -8.05, 14])
+        cube([13.1, 16.1, 10.5]);
+    
+  
+}
