@@ -6,19 +6,14 @@ int pixel = 0;
 
 void setup() {
   pixels.begin();
-  pixels.setBrightness(60); // 1/3 brightness
+  pixels.setBrightness(255); // 1/3 brightness
+  for (int i = 0; i++; i < 13) {
+    pixels.setPixelColor(i, 255, 0, 0);
+    pixels.show();
+    delay(200);
+  }  
 }
 
 void loop() {
-  pixels.setPixelColor(pixel, 0, 255, 0);
-  pixels.show();
-  pixel++;
-  if (pixel > 12) {
-    pixel = 0;
-    for (int i = 0; i < 12; i++) {
-      pixels.setPixelColor(i, 0, 0, 0);
-    }
-  }
 
-  delay(200);
 }

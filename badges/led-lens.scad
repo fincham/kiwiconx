@@ -16,7 +16,7 @@ difference() {
             cylinder(r=20, h=2, $fn=12); // dish itself
     
 }
-
+/*
 difference() {
     cylinder(r=7.18+1.15+1+0.18, h=3.6); 
     translate([0, 0, -0.001])    {
@@ -24,7 +24,7 @@ difference() {
         translate([-5, -25, 0])
             cube([10, 50, 10]);    }
 }
-
+*/
 module ring_holder() {
         cylinder(r=18.68+1.15, h=3.5);
 
