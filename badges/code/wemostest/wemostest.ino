@@ -52,10 +52,13 @@ int fadeAmount = 5;    // how many points to fade the LED by
 void setup() {
 
   Serial.begin(9600);
-  Serial.println("\n\nWeMos D1 Mini + Nokia 5110 PCD8544 84x48 Monochrome LCD\nUsing Adafruit_PCD8544 and Adafruit_GFX libraries\n");
+  Serial.println("KIWICON X - Space pager firmware by Michael Fincham.");
 
   // Turn LCD backlight on
   pinMode(BL_PIN, OUTPUT);
+  pinMode(D3, INPUT_PULLUP);
+  pinMode(D4, INPUT_PULLUP);
+
   digitalWrite(BL_PIN, HIGH);
 
   display.begin();
@@ -70,16 +73,8 @@ void setup() {
 }
 
 void loop() {
-  // set the brightness of pin 9:
-  analogWrite(BL_PIN, brightness);
-
-  // change the brightness for next time through the loop:
-  brightness = brightness + fadeAmount;
-
-  // reverse the direction of the fading at the ends of the fade:
-  if (brightness <= 0 || brightness >= 1022) {
-    fadeAmount = -fadeAmount;
-  }
-  // wait for 30 milliseconds to see the dimming effect
-  delay(5);  
+  int pin = 0;
+  pin = digitalRead(D3);
+  Serial.print(pin, DEC);
+  Serial.print('\n');
 }

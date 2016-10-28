@@ -59,6 +59,9 @@ difference() {
     rotate([0, 0, 45])    
         cube([12, 12, 10]);        
 
+    translate([15.5, -31, -1])
+    rotate([0, 0, 90+45])
+        cube([15.5, 7.5, 5]);
 }
 
 
@@ -72,13 +75,23 @@ translate([21, -31, 0])
 rotate([0, 0, 45])
     charger();
 
-translate([-10, -20, 0])
-rotate([0, 0, 45])
+translate([-15, -18, 0])
+rotate([0, 0, 105])
 gemma_holder();
 
 // battery holder
-translate([0, -5, 0])
-    cube([10, 3, 5]);
+translate([0, -3, 0])
+hull() {
+    cube([10, 1, 5]);    
+    translate([0, -2, 5])
+        cube([10, 3, 0.01]);    
 
+}
+    
 translate([0, 33-5, 0])
-    cube([10, 3, 5]);
+hull() {
+    cube([10, 1, 5]);    
+    translate([0, 0, 5])
+        cube([10, 3, 0.01]);    
+
+}
