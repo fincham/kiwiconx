@@ -73,7 +73,7 @@ void loop() {
 
   if (loops == 10) {
     current = uv.readUV();
-    current /= 100.0;  
+    current /= 100.0;
   }
   
   if (loops == 20) {

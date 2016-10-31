@@ -26,7 +26,7 @@ difference() {
 }
 */
 module ring_holder() {
-        cylinder(r=18.68+1.15, h=3.5);
+        cylinder(r=18.68+1.55, h=3.5);
 
 
 }

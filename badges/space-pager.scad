@@ -59,54 +59,7 @@ module screw(h) {
     }
 }
 
-// the module
-/*
-translate([4.3, 1.8, 0])
-difference() {
-    cube([34, 40, 5]);
 
-    translate([1.22, 2, 4.5])
-        rounded_box(26.4, 36, 10, 3.5);
-}
-*/
-/*
-translate([0, 0, 0])
-corner_mounted(42.9, 43.6, 1.2, 1.5);
-*/
-
-// top plate 
-/*
-translate([-3.55, -3.2, 4])
-difference() {
-    rounded_box(60, 50, 1, 3.5);
-    translate([7.8, 4.8, 0])
-        cube([34.4, 40.4, 5]);
-    
-translate([55+3.55, 3.2, 3])
-rotate([0, 180, 0])
-    switch_box();
-
-translate([55+3.55, 33.6+3.2, 3])
-rotate([0, 180, 0])
-    switch_box();   
-}
-
-translate([1.5, 1.5, 1])
-    screw(3);
-translate([42.9-3+1.5, 1.5, 1])
-    screw(4);
-translate([42.9-3+1.5, 43.6-3+1.5, 1])
-    screw(4);
-translate([1.5, 43.6-3+1.5, 1])
-    screw(4);
-
-translate([55, 0, 5])
-rotate([0, 180, 0])
-    switch();
-
-translate([55, 43.6-10, 5])
-rotate([0, 180, 0])
-    switch(); */
 
 module box() {
     // the box
@@ -152,6 +105,10 @@ rotate([0, 0, 90])
 translate([25, 49, 0])
 rotate([0, 0, 180])
     cutout();
+    
+translate([-11, 3, -13])
+cube([9, 38, 14]);    
+
 
 }
 
@@ -179,7 +136,7 @@ module screw_post () {
         cylinder(r=4, h=12);
 
         translate([0, 0, -0.1])
-            cylinder(r=2.85/2, h=12);        
+            cylinder(r=2.75/2, h=12);        
     }
 }
 
@@ -203,3 +160,83 @@ screw_post();
         }
     
 }
+
+  
+
+difference() {
+difference() {
+translate([-11, 2, -11])
+cube([10, 40, 13]);
+    translate([0, 0, -0.001])
+    box();
+    
+}
+
+translate([-9.5, 3, -12])
+cube([8, 38, 13]); 
+
+
+// switch hole
+translate([-12, 3, -7])
+cube([10, 16.8, 7.1]);
+
+
+// power hole
+translate([-12, 26, -6])
+cube([10, 10, 4.4]);
+}
+
+
+
+
+translate([-11, 3, -11])
+cube([2, 38, 4]);
+
+
+translate([-11, 3, -11])
+cube([2, 38, 4]);
+
+
+
+// shelf
+intersection() {
+translate([-9, -9, -7.8])
+cube([10, 61, 0.5+0.3]);
+box();
+}
+
+/*
+translate([20, -8.5, -7.8])
+cube([20, 60.5, 0.5+0.3]);
+*/
+
+// snap away shelf supports
+translate([1, 20.5, -11])
+cylinder(r=1,h=3.5-0.3);
+translate([1, 20.5, -11])
+cylinder(r=3,h=0.5-0.3);
+/*
+translate([20, 20.5, -11])
+cylinder(r=1,h=3.5-0.3);
+translate([20, 20.5, -11])
+cylinder(r=3,h=0.5);
+
+translate([40, 20.5, -11])
+cylinder(r=1,h=3.5-0.3);
+translate([40, 20.5, -11])
+cylinder(r=3,h=0.5);
+*/
+
+// heat stakes for the charger
+module charger() {
+    translate([0, 0.5, 0])
+        cylinder(r=0.9, h=3.5);
+
+    translate([0, 15, 0])
+        cylinder(r=0.9, h=3.5);
+
+}
+
+translate([-7, 23.5, -7.8])
+
+charger();

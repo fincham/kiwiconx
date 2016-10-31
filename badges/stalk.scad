@@ -2,8 +2,8 @@ include <circuit.scad>;
 
 module clip() {
     hull() {
-        translate([0, 0, 3])
-            cube([13, 9, 0.1], center=true); // wide part of clip
+        translate([0, 0, 1.5])
+            cube([13, 9.5, 0.1], center=true); // wide part of clip
         cube([13, 4, 1], center=true); // thin part of clip
     }
 }    
@@ -18,12 +18,12 @@ difference() { // drill wire hole
         clip();
 
         // modesty plate
-        translate([-6.5, -8, 4.25])
+        translate([-6.5, -8, 3.25])
             cube([13, 16, 1.5]);
         
 
         // top plate
-        translate([-6.5, -8, 60])
+        translate([-6.5, -8, 61])
             cube([13, 16, 1.5]);
         
         // top clip
@@ -34,7 +34,7 @@ difference() { // drill wire hole
     
     // driled hole
     translate([0, 0, -0.1])    
-        cube([10, 1.6,200], center=true);        
+        cube([11.5, 1.6,200], center=true);        
     
     // some "art" for the side
     /* intersection() {
