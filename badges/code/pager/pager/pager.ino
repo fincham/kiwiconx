@@ -8,13 +8,18 @@
 #include <ESP8266WiFi.h>
 #include "FS.h"
 
-const char* ssid = "hotplate";
-const char* password = "frillymatrixbathroomshuffle";
+#undef min
+inline int min(int a, int b) { return ((a)<(b) ? (a) : (b)); }
+inline double min(double a, double b) { return ((a)<(b) ? (a) : (b)); }
 
-const int backlight_time = 30000; // in millis
+const char* ssid = "ambassadors";
+const char* password = "ilikeotters";
+
+const int backlight_time = 60000; // in millis
 const int wifi_time = 10000; // in millis
 
-const int default_contrast = 50; // usable range 30 - 60
+const int default_contrast = 45; // usable range 30 - 60
+const int number_of_blinks = 100;
 
 const int8_t RST_PIN = D2;
 const int8_t CE_PIN = D1;
@@ -31,9 +36,10 @@ String input_string = "";
 String client_string = "";
 String message_index = "0";
 String message_buffer = "";
+String scroll_buffer = "";
 String directory_cache = "";
 String body = "";
-int backlight_blink_count = 0;
+int backlight_blink_count = number_of_blinks;
 int backlight_status = HIGH;
 unsigned long backlight_timeout = millis();
 unsigned long wifi_timeout = 0;
@@ -48,7 +54,7 @@ int right_button = 0;
 
 int download_state = 0;
 int message_count_cache = 0;
-
+int scroll_offset = 0;
 int ui = 0;
 
 int current_message = 0;
@@ -59,6 +65,13 @@ bool ret_message = true;
 char left_icons[] = "?x<";
 char right_icons[] = "> >";
 
+int lastchar = 0;
+
+int scroll_offset_history[200];
+int scrolls = 0;
+
+int page = 0;
+
 int message_count() {
   int count = 0;
   Dir dir = SPIFFS.openDir("/messages");
@@ -66,6 +79,41 @@ int message_count() {
     count++;
   }
   return count;
+}
+
+void read_directory() {
+  if (!directory_dirty) {
+    return;
+  }
+  directory_cache = "";
+  int found = 0;
+  for (int i = message_index.toInt() + 1; i > 0; i--) {
+    String path = String(i-1);
+    path = "/messages/" + path;
+    if (SPIFFS.exists(path)) {
+      File f = SPIFFS.open(path, "r");
+      String unread = f.readStringUntil('\n');
+      String subject = f.readStringUntil('\n');
+      unread.trim();
+      subject.trim();
+      f.close();
+      if (unread.equals("Unread")) {
+        directory_cache += "*";
+      } else {
+        directory_cache += " ";
+      }
+      if (subject.length() > 13) { // the initial char sets the format, gets stripped off
+        subject = subject.substring(0,13);
+      }
+      directory_cache += subject + "\n";
+      found++;
+      if (found > 4) {
+        break;
+      }
+    }
+  }
+  directory_dirty = false;
+  message_count_cache = message_count();
 }
 
 void alert_box(char* text) {
@@ -84,6 +132,44 @@ void mid_print(char* text, int y) {
   display.print(text);
 }
 
+int load_latest_message(int skip) {
+  int found = 0;
+  int i = 0;
+  for (i = message_index.toInt() + 1; i > 0; i--) {
+    String path = String(i-1);
+    path = "/messages/" + path;
+    if (SPIFFS.exists(path)) {
+      found++;
+      if (skip != 0 && found <= skip) {
+        continue;
+      }
+      scroll_buffer = "";
+      File f = SPIFFS.open(path, "r+");
+      String unread = f.readStringUntil('\n');
+      unread.trim();
+      if (unread.equals("Unread")) {
+        f.seek(0, SeekSet);
+        f.print("Read");
+        f.readStringUntil('\n');
+        directory_dirty = true;
+      }
+
+      String subject = f.readStringUntil('\n');
+      String when = f.readStringUntil('\n');
+
+      scroll_buffer += "Subject: " + subject+"\n";
+      scroll_buffer += "Date: " + when + "\nMessage:\n";
+      
+      
+      while(f.available()) {
+        scroll_buffer += f.readStringUntil('\n');
+      }
+      f.close();
+      break;
+    }
+  }
+  return i;
+}
 
 void draw_display() {
   digitalWrite(BL_PIN, backlight_status);
@@ -92,6 +178,7 @@ void draw_display() {
 
     display.clearDisplay();
 
+    // draw the button icons
     if (left_icons[ui] != ' ') {
       display.fillRoundRect(0, 39, 9, 9, 1, BLACK);
     }
@@ -101,16 +188,11 @@ void draw_display() {
     }
     
     display.setTextColor(WHITE);
-
     display.setCursor(77, 40); 
     display.print(right_icons[ui]);
-
     display.setCursor(2, 40); // bottom row
     display.print(left_icons[ui]);
-
-    
     display.setCursor(0, 0);
-
     display.setTextColor(BLACK);
 
     if (ui == 0) { // message list
@@ -126,12 +208,12 @@ void draw_display() {
             display.fillRoundRect(0, newlines * 8, 84, 8, 1, BLACK);
             display.setCursor(2, newlines * 8);
             
-            display.print(line.substring(1, line.length()-2));
+            display.print(line.substring(1, line.length()));
             display.setTextColor(BLACK);
             
           } else {
             display.setCursor(2, newlines * 8);
-            display.print(line.substring(1, line.length()-2));            
+            display.print(line.substring(1, line.length()));            
           }
           line = "";
           newlines++;
@@ -156,8 +238,9 @@ void draw_display() {
       if (right_button == 2) { // "read"
         right_button = 0;
         ui = 2;
-        ret_message = true;
-        current_message = message_index.toInt();
+        depth = 0;
+        current_message = load_latest_message(0);
+        page = 0;
       }      
     } else if (ui == 1) { // help screen
 
@@ -195,79 +278,90 @@ void draw_display() {
         right_button = 0;
       }         
     } else if (ui == 2) { // read screen
-      if (ret_message) { // message needs to be loaded
-        Serial.print("looking for messages after ");
-        Serial.println(current_message);
-        
-        for (int i = current_message + 1; i > 0; i--) {
-          Serial.print("trying ");
-          Serial.println(i-1);
-          String path = String(i-1);
-          path = "/messages/" + path;
-          if (SPIFFS.exists(path)) {
-            File f = SPIFFS.open(path, "r+");
-            String unread = f.readStringUntil('\n');
-            unread.trim();
-            if (unread.equals("Unread")) {
-              directory_dirty = true;
-              f.seek(0, SeekSet);
-              f.print("Read  ");
-              unread = f.readStringUntil('\n');
-            }
-  
-            String subject = f.readStringUntil('\n');
-            subject.trim();
-            String date = f.readStringUntil('\n');
-            date.trim();          
-  
-            display.setTextWrap(true);
-  
-            body = "Subject: ";
-            body += subject + "\nSent: ";
-            body += date + "\n";
-            
-            while(f.available()) {
-              body += f.readStringUntil('\n') + "\n";
-            }
-          
-            f.close();
+      int charpos = scroll_offset;
+      int linep = 0;
+      int rp = 0;
+      int printed = 0;
       
-
-            current_message = i-1;     
-            ret_message = false; 
-            break;
-          }
+      while (charpos < scroll_buffer.length()) {
+        if (scroll_buffer[charpos] == '\n' && lastchar == '\n') {
+          charpos++;
+          continue;
         }
+        lastchar = scroll_buffer[charpos];
+
+        if (scroll_buffer[charpos] == '\n') {
+          charpos++;
+          display.println("");
+          rp++;
+          linep = 0;
+          continue;
+        }
+
+        if (rp > 4) {
+          break;
+        }
+        display.print(scroll_buffer[charpos]);
+        charpos++;
+        linep++;
+        printed++;
+
+        if (linep == 14) {
+          display.println("");
+          linep = 0;
+          rp++;
+          lastchar = '\n';
+        }        
       }
 
-      display.print(body);
-      String message_stats = String(current_message);
-      message_stats = "Msg " + message_stats;
+      String message_status = "";
+      message_status += String(current_message) + "/" + String(min(100, round(((float)charpos / ((float)scroll_buffer.length() - 1)) * 100))) + "%";
+      
       char message[15];
-      message_stats.toCharArray(message, 14);      
-      mid_print(message, 40);      
+      message_status.toCharArray(message, 14);      
+      mid_print(message, 40);
+
+      if (left_button == 2 && right_button == 2) { // "exit"
+        left_button = 0;
+        right_button = 0;
+        ui = 0;
+        return;
+      }      
 
       if (left_button == 2) { // "back"
         left_button = 0;
-        if (depth <= 0) {
-          ui = 0;
+        if (scroll_offset > 0) {
+          scrolls--;
+          scroll_offset=scroll_offset_history[scrolls];
         } else {
-          depth--;
-          Serial.print("going back to ");
-          Serial.println(last_message);
-          current_message = last_message;
-          ret_message=true;
-        }
-      }      
+          if (depth == 0) {
+            ui = 0;
+          } else {
+            depth--;
+            current_message = load_latest_message(depth);
+          }  
+        }      
+      }
 
       if (right_button == 2) { // "forward"
         right_button = 0;
-        depth++;
-        last_message = current_message;
-        current_message--;
-        ret_message=true;
+        if (charpos < scroll_buffer.length()) {
+          scroll_offset_history[scrolls] = scroll_offset;
+          scrolls++;          
+          scroll_offset = charpos;
+        } else {
+          if (depth+1 < message_count_cache) {
+            scroll_offset = 0;
+            scrolls = 0;
+            depth++;
+            current_message = load_latest_message(depth);
+          } else {
+            alert_box("No more!");
+            display.display();
+            wait_for_key(2000);
+          }
+        }
       }         
-        
     }
     display.display();
     last_display_draw = millis();
@@ -280,36 +374,6 @@ void wait_for_key(int timeout) {
   while (digitalRead(D3) != LOW && digitalRead(D4) != LOW && last + timeout > millis()) {
     delay(5);
   }
-}
-
-void read_directory() {
-  if (!directory_dirty) {
-    return;
-  }
-  directory_cache = "";
-  for (int i = message_index.toInt() + 1; i > 0; i--) {
-    String path = String(i-1);
-    path = "/messages/" + path;
-    if (SPIFFS.exists(path)) {
-      File f = SPIFFS.open(path, "r");
-      String unread = f.readStringUntil('\n');
-      String subject = f.readStringUntil('\n');
-      unread.trim();
-      subject.trim();
-      f.close();
-      if (unread.equals("Unread")) {
-        directory_cache += "*";
-      } else {
-        directory_cache += " ";
-      }
-      if (subject.length() > 14) { // the initial char sets the format, gets stripped off
-        subject = subject.substring(0,14);
-      }
-      directory_cache += subject + "\n";
-    }
-  }
-  directory_dirty = false;
-  message_count_cache = message_count();
 }
 
 void read_input() {
@@ -374,24 +438,30 @@ void read_input() {
 void timers() {
   static int backlight_blink_delay = 0;
 
-  if (backlight_blink_count < 20) {
-    if (backlight_blink_delay > 2) {
+  if (backlight_blink_count < number_of_blinks) {
+    if (backlight_blink_delay > 5) {
       if (backlight_status == HIGH) {
+        Serial.println("blink on");
         backlight_status = LOW;
       } else {
+        Serial.println("blink off");
         backlight_status = HIGH;
       }
       backlight_blink_count++;
       backlight_blink_delay = 0;
     } else {
+      Serial.print("blink delay ");
+      Serial.println(backlight_blink_delay);
       backlight_blink_delay++;
     }
   }
 
-  if (millis() < backlight_timeout + backlight_time) {
-    backlight_status = LOW;
-  } else {
-    backlight_status = HIGH;
+  if (backlight_blink_count >= number_of_blinks) {
+    if (millis() < backlight_timeout + backlight_time) {
+      backlight_status = LOW;
+    } else {
+      backlight_status = HIGH;
+    }
   }
 
   if (!client.connected()) {
@@ -407,6 +477,7 @@ void timers() {
     {         
       Serial.println("Connected to mothership.");
       download_state = 0;
+      client.print("ID ");
       client.print(ESP.getChipId());
       client.print(" ");
       client.println(message_index);
@@ -421,7 +492,9 @@ void timers() {
   }
 
   // the horrible TCP state machine  
-  while (client.connected() && client.available() > 0) {
+  int bytes_read = 0;
+  while (client.connected() && client.available() > 0 && bytes_read < 1000) {
+    bytes_read++;
     int client_char = client.read();
     client_string += (char)client_char;
 
@@ -430,19 +503,19 @@ void timers() {
       
       if (download_state == 0) { // command state
         if (client_string.equals("flash")) {
-          client.print("Enter flash message: ");
+          client.println("ALERT");
           download_state = 10;
         } else if (client_string.equals("push")) {
-          client.print("Enter new message index: ");
+          client.println("INDEX");
           download_state = 1; 
         } else if (client_string.equals("dir")) {
-          client.println("Directory listing of flash:");
+          client.println("LISTING");
           Dir dir = SPIFFS.openDir("/");
           while (dir.next()) {
               client.println(dir.fileName());
           }    
         } else if (client_string.equals("cat")) {
-          client.print("Filename to cat: ");
+          client.println("FILENAME");
           download_state = 20;   
         } else if (client_string.equals("clean")) {
           Dir dir = SPIFFS.openDir("/messages");
@@ -453,19 +526,19 @@ void timers() {
           File index_file = SPIFFS.open("/index", "w");
           index_file.println(message_index);
           index_file.close();        
-          client.println("Removed all messages.");
+          client.println("CLEANED");
           directory_dirty = true;
 
         } else if (client_string.equals("factory")) {
-          client.println("Factory reset. Bye!");
+          client.println("RESET");
           alert_box("Factory reset");
           SPIFFS.remove("/contrast");
           ESP.reset();
         } else if (client_string.equals("done")) {
-          client.println("Cya!");
+          client.println("BYE");
           client.stop();        
         } else {
-          client.println("Unrecognised command.");
+          client.println("WHAT?");
         }
       } else if (download_state == 1) { // new index is being pushed
         message_index = client_string;
@@ -473,7 +546,7 @@ void timers() {
         index_file.println(message_index);
         index_file.close();
         download_state = 2;
-        client.println("Send message data followed by a . on its own line.");
+        client.println("DATA");
       } else if (download_state == 2) { // message data
         if (!client_string.equals(".")) {
           message_buffer += client_string + "\n";
@@ -490,6 +563,8 @@ void timers() {
           message_buffer = "";
           download_state = 0;
           directory_dirty = true;
+          backlight_blink_count = 0;
+          backlight_timeout = millis();        
         }
       } else if (download_state == 10) { // debug flash message
         digitalWrite(BL_PIN, LOW);
@@ -532,6 +607,7 @@ void setup() {
   display.begin();
   display.setContrast(default_contrast);
   display.clearDisplay();
+  
   display.setTextSize(1);
   display.setTextWrap(false);
   display.setTextColor(BLACK);
@@ -558,9 +634,9 @@ void setup() {
     File message_file = SPIFFS.open("/messages/0", "w");
     message_file.println("Unread");
     message_file.println("Welcome to the Ambassador defence system!");
-    message_file.println("1970-01-01");
+    message_file.println("1/1/70");
     message_file.println("");
-    message_file.println("Congratulations on your purchase of this state of the art interplanetary alerting and paging network.");
+    message_file.println("Congratulations on your purchase of this state of the art KIWICON X interplanetary alerting and paging network. Sleep soundly knowing that in the event of unrest, cyberwar or spooky packets at a distance you will be the first to know.");
 
     message_file.close();
     alert_box("Done");    
