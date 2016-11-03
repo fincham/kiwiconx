@@ -17,6 +17,7 @@ const char* password = "ilikeotters";
 
 const int backlight_time = 60000; // in millis
 const int wifi_time = 10000; // in millis
+const int scan_time = 30000; // in millis
 
 const int default_contrast = 45; // usable range 30 - 60
 const int number_of_blinks = 100;
@@ -43,6 +44,8 @@ int backlight_blink_count = number_of_blinks;
 int backlight_status = HIGH;
 unsigned long backlight_timeout = millis();
 unsigned long wifi_timeout = 0;
+unsigned long scan_timeout = 0;
+
 bool wifi_working = false;
 bool directory_dirty = true;
 
@@ -485,8 +488,8 @@ void timers() {
 
   }
 
-  if (WiFi.status() == 1 && millis() > wifi_timeout + wifi_time) {
-    wifi_timeout = millis();
+  if ((WiFi.status() == 1 || WiFi.status() > 3) && millis() > (scan_timeout + scan_time)) {
+    scan_timeout = millis();
     Serial.println("Forcing a WiFi re-scan...");
     WiFi.reconnect();
   }
